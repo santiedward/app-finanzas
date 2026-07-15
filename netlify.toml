@@ -1,0 +1,6 @@
+[build]
+  command = "corepack enable && bin/package-browser"
+  publish = "packages/desktop-client/build"
+
+[build.environment]
+  NODE_VERSION = "22.18.0"

@@ -30,4 +30,8 @@ if [ "$SKIP_TRANSLATIONS" = false ]; then
   packages/desktop-client/bin/remove-untranslated-languages
 fi
 
+# Always apply our own 100%-complete Spanish translation on top of whatever
+# came from the upstream translations repo (which may be incomplete).
+cp packages/desktop-client/es-custom-translation.json packages/desktop-client/locale/es.json
+
 lage build:browser --to=@actual-app/web
