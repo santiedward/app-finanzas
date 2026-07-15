@@ -1,14 +1,13 @@
-import React, { useCallback, useState } from 'react';
-import type { ComponentProps, ComponentType, CSSProperties } from 'react';
+import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NavLink } from 'react-router';
-import { animated, config, useSpring } from 'react-spring';
+import { NavLink, useLocation } from 'react-router';
 
 import { useResponsive } from '@actual-app/components/hooks/useResponsive';
 import {
   SvgAdd,
   SvgCog,
   SvgCreditCard,
+  SvgDotsHorizontalTriple,
   SvgPiggyBank,
   SvgReports,
   SvgStoreFront,
@@ -16,305 +15,208 @@ import {
   SvgWallet,
 } from '@actual-app/components/icons/v1';
 import { SvgCalendar3 } from '@actual-app/components/icons/v2';
+import { Menu } from '@actual-app/components/menu';
+import { Popover } from '@actual-app/components/popover';
 import { styles } from '@actual-app/components/styles';
 import { theme } from '@actual-app/components/theme';
 import { View } from '@actual-app/components/view';
-import { useDrag } from '@use-gesture/react';
 
-import { useIsTestEnv } from '#hooks/useIsTestEnv';
-import { useScrollListener } from '#hooks/useScrollListener';
+import { useNavigate } from '#hooks/useNavigate';
 import { useSyncServerStatus } from '#hooks/useSyncServerStatus';
 
-const COLUMN_COUNT = 3;
-const PILL_HEIGHT = 15;
-const ROW_HEIGHT = 70;
-const TOTAL_HEIGHT = ROW_HEIGHT * COLUMN_COUNT;
-const OPEN_FULL_Y = 1;
-const OPEN_DEFAULT_Y = TOTAL_HEIGHT - ROW_HEIGHT;
-const HIDDEN_Y = TOTAL_HEIGHT;
-
-export const MOBILE_NAV_HEIGHT = ROW_HEIGHT + PILL_HEIGHT;
+export const MOBILE_NAV_HEIGHT = 64;
 
 export function MobileNavTabs() {
   const { t } = useTranslation();
   const { isNarrowWidth } = useResponsive();
+  const navigate = useNavigate();
+  const location = useLocation();
   const syncServerStatus = useSyncServerStatus();
-  const isTestEnv = useIsTestEnv();
-  const isUsingServer = syncServerStatus !== 'no-server' || isTestEnv;
-  const [navbarState, setNavbarState] = useState<'default' | 'open' | 'hidden'>(
-    'default',
-  );
+  const isUsingServer = syncServerStatus !== 'no-server';
 
-  const navTabStyle = {
-    flex: `1 1 ${100 / COLUMN_COUNT}%`,
-    height: ROW_HEIGHT,
-    padding: '8px 8px 10px',
-    maxWidth: `${100 / COLUMN_COUNT}%`,
-  };
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreTriggerRef = useRef(null);
 
-  const [{ y }, api] = useSpring(() => ({ from: { y: OPEN_DEFAULT_Y } }), []);
+  if (!isNarrowWidth) {
+    return null;
+  }
 
-  const openFull = useCallback(
-    ({ canceled }: { canceled?: boolean }) => {
-      // when cancel is true, it means that the user passed the upwards threshold
-      // so we change the spring config to create a nice wobbly effect
-      setNavbarState('open');
-      void api.start({
-        to: { y: OPEN_FULL_Y },
-        immediate: isTestEnv,
-        config: canceled ? config.wobbly : config.stiff,
-      });
-    },
-    [api, isTestEnv],
-  );
+  const primaryTabs = [
+    { name: t('Budget'), path: '/budget', Icon: SvgWallet },
+    { name: t('Accounts'), path: '/accounts', Icon: SvgPiggyBank },
+  ];
 
-  const openDefault = useCallback(
-    (velocity = 0) => {
-      setNavbarState('default');
-      void api.start({
-        to: { y: OPEN_DEFAULT_Y },
-        immediate: isTestEnv,
-        config: { ...config.stiff, velocity },
-      });
-    },
-    [api, isTestEnv],
-  );
+  const secondaryTabs = [
+    { name: t('Reports'), path: '/reports', Icon: SvgReports },
+  ];
 
-  const hide = useCallback(
-    (velocity = 0) => {
-      setNavbarState('hidden');
-      void api.start({
-        to: { y: HIDDEN_Y },
-        immediate: isTestEnv,
-        config: { ...config.stiff, velocity },
-      });
-    },
-    [api, isTestEnv],
-  );
-
-  const navTabs = [
+  const moreItems = [
     {
-      name: t('Budget'),
-      path: '/budget',
-      style: navTabStyle,
-      Icon: SvgWallet,
-    },
-    {
-      name: t('Transaction'),
-      path: '/transactions/new',
-      style: navTabStyle,
-      Icon: SvgAdd,
-    },
-    {
-      name: t('Accounts'),
-      path: '/accounts',
-      style: navTabStyle,
-      Icon: SvgPiggyBank,
-    },
-    {
-      name: t('Reports'),
-      path: '/reports',
-      style: navTabStyle,
-      Icon: SvgReports,
-    },
-    {
-      name: t('Schedules'),
+      name: 'schedules',
+      text: t('Schedules'),
+      icon: SvgCalendar3,
       path: '/schedules',
-      style: navTabStyle,
-      Icon: SvgCalendar3,
     },
     {
-      name: t('Payees'),
+      name: 'payees',
+      text: t('Payees'),
+      icon: SvgStoreFront,
       path: '/payees',
-      style: navTabStyle,
-      Icon: SvgStoreFront,
     },
-    {
-      name: t('Rules'),
-      path: '/rules',
-      style: navTabStyle,
-      Icon: SvgTuning,
-    },
+    { name: 'rules', text: t('Rules'), icon: SvgTuning, path: '/rules' },
     ...(isUsingServer
       ? [
           {
-            name: t('Bank Sync'),
+            name: 'bank-sync',
+            text: t('Bank Sync'),
+            icon: SvgCreditCard,
             path: '/bank-sync',
-            style: navTabStyle,
-            Icon: SvgCreditCard,
           },
         ]
       : []),
     {
-      name: t('Settings'),
+      name: 'settings',
+      text: t('Settings'),
+      icon: SvgCog,
       path: '/settings',
-      style: navTabStyle,
-      Icon: SvgCog,
     },
-  ].map(tab => (
-    <NavTab key={tab.path} onClick={() => openDefault()} {...tab} />
-  ));
+  ];
 
-  const bufferTabsCount = COLUMN_COUNT - (navTabs.length % COLUMN_COUNT);
-  const bufferTabs = Array.from({ length: bufferTabsCount }).map((_, idx) => (
-    <div key={idx} style={navTabStyle} />
-  ));
-
-  useScrollListener(
-    useCallback(
-      ({ isScrolling, hasScrolledToEnd }) => {
-        if (isScrolling('down') && !hasScrolledToEnd('up')) {
-          hide();
-        } else if (isScrolling('up') && !hasScrolledToEnd('down')) {
-          openDefault();
-        }
-      },
-      [hide, openDefault],
-    ),
-  );
-
-  const bind = useDrag(
-    ({
-      last,
-      velocity: [, vy],
-      direction: [, dy],
-      offset: [, oy],
-      cancel,
-      canceled,
-    }) => {
-      // if the user drags up passed a threshold, then we cancel
-      // the drag so that the sheet resets to its open position
-      if (oy < 0) {
-        cancel();
-      }
-
-      // when the user releases the sheet, we check whether it passed
-      // the threshold for it to close, or if we reset it to its open position
-      if (last) {
-        if (oy > ROW_HEIGHT * 0.5 || (vy > 0.5 && dy > 0)) {
-          openDefault(vy);
-        } else {
-          openFull({ canceled });
-        }
-      } else {
-        // when the user keeps dragging, we just move the sheet according to
-        // the cursor position
-        void api.start({ to: { y: oy }, immediate: true });
-      }
-    },
-    {
-      from: () => [0, y.get()],
-      filterTaps: true,
-      bounds: { top: -TOTAL_HEIGHT, bottom: TOTAL_HEIGHT - ROW_HEIGHT },
-      axis: 'y',
-      rubberband: true,
-    },
+  const isMoreActive = moreItems.some(item =>
+    location.pathname.startsWith(item.path),
   );
 
   return (
-    <animated.div
+    <View
       role="navigation"
-      {...bind()}
       style={{
-        y,
-        touchAction: 'pan-x',
         backgroundColor: theme.mobileNavBackground,
-        backgroundImage: `linear-gradient(140deg, color-mix(in srgb, ${theme.mobileNavBackground} 92%, ${theme.mobileNavItemSelected}), ${theme.mobileNavBackground} 58%, color-mix(in srgb, ${theme.mobileNavBackground} 88%, ${theme.pageBackgroundBottomRight}))`,
-        backdropFilter: 'blur(18px)',
-        borderTop: `1px solid ${theme.cardBorder}`,
-        borderTopLeftRadius: 18,
-        borderTopRightRadius: 18,
-        boxShadow:
-          '0 -18px 44px rgba(0, 0, 0, 0.28), 0 -1px 0 rgba(255, 255, 255, 0.04)',
-        height: TOTAL_HEIGHT + PILL_HEIGHT,
+        borderTop: `1px solid ${theme.menuBorder}`,
+        ...styles.shadow,
+        height: MOBILE_NAV_HEIGHT,
         width: '100%',
         position: 'fixed',
-        zIndex: 100,
         bottom: 0,
-        ...(!isNarrowWidth && { display: 'none' }),
+        flexDirection: 'row',
+        alignItems: 'stretch',
+        zIndex: 100,
       }}
-      data-navbar-state={navbarState}
     >
-      <View>
-        <div
-          style={{
-            backgroundColor: theme.mobileNavItemSelected,
-            borderRadius: 999,
-            width: 34,
-            marginTop: 5,
-            marginBottom: 6,
-            padding: 2,
-            alignSelf: 'center',
-            opacity: 0.72,
+      {primaryTabs.map(tab => (
+        <NavTab key={tab.path} {...tab} />
+      ))}
+
+      <AddTransactionButton />
+
+      {secondaryTabs.map(tab => (
+        <NavTab key={tab.path} {...tab} />
+      ))}
+
+      <button
+        ref={moreTriggerRef}
+        onClick={() => setMoreOpen(true)}
+        aria-label={t('More')}
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 2,
+          background: 'transparent',
+          border: 'none',
+          color: isMoreActive
+            ? theme.mobileNavItemSelected
+            : theme.mobileNavItem,
+          fontSize: 11,
+        }}
+      >
+        <SvgDotsHorizontalTriple width={20} height={20} />
+        {t('More')}
+      </button>
+
+      <Popover
+        triggerRef={moreTriggerRef}
+        isOpen={moreOpen}
+        onOpenChange={() => setMoreOpen(false)}
+        placement="top end"
+        style={{ width: 200 }}
+      >
+        <Menu
+          items={moreItems}
+          onMenuSelect={name => {
+            const item = moreItems.find(i => i.name === name);
+            setMoreOpen(false);
+            if (item) {
+              navigate(item.path);
+            }
           }}
         />
-        <View
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            height: TOTAL_HEIGHT,
-            width: '100%',
-          }}
-        >
-          {[navTabs, bufferTabs]}
-        </View>
-      </View>
-    </animated.div>
+      </Popover>
+    </View>
   );
 }
-
-type NavTabIconProps = {
-  width: number;
-  height: number;
-  style?: CSSProperties;
-};
 
 type NavTabProps = {
   name: string;
   path: string;
-  Icon: ComponentType<NavTabIconProps>;
-  style?: CSSProperties;
-  onClick: ComponentProps<typeof NavLink>['onClick'];
+  Icon: React.ComponentType<{ width: number; height: number }>;
 };
 
-function NavTab({ Icon: TabIcon, name, path, style, onClick }: NavTabProps) {
+function NavTab({ Icon: TabIcon, name, path }: NavTabProps) {
   return (
     <NavLink
       to={path}
       style={({ isActive }) => ({
         ...styles.noTapHighlight,
-        alignItems: 'center',
-        backgroundColor: isActive
-          ? `color-mix(in srgb, ${theme.mobileNavItemSelected} 18%, transparent)`
-          : 'transparent',
-        border: `1px solid ${
-          isActive
-            ? `color-mix(in srgb, ${theme.mobileNavItemSelected} 42%, transparent)`
-            : 'transparent'
-        }`,
-        borderRadius: 15,
-        color: isActive ? theme.mobileNavItemSelected : theme.mobileNavItem,
+        flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        fontSize: 11,
-        fontWeight: isActive ? 700 : 600,
-        gap: 4,
+        alignItems: 'center',
         justifyContent: 'center',
-        lineHeight: 1.15,
-        margin: '0 6px 8px',
+        gap: 2,
+        color: isActive ? theme.mobileNavItemSelected : theme.mobileNavItem,
         textDecoration: 'none',
-        textAlign: 'center',
-        textWrap: 'balance',
-        transform: isActive ? 'translateY(-1px)' : 'translateY(0)',
-        transition:
-          'background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease',
+        fontSize: 11,
         userSelect: 'none',
-        ...style,
       })}
-      onClick={onClick}
     >
-      <TabIcon width={22} height={22} style={{ minHeight: '22px' }} />
+      <TabIcon width={20} height={20} />
       {name}
     </NavLink>
+  );
+}
+
+function AddTransactionButton() {
+  const { t } = useTranslation();
+  return (
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <NavLink
+        to="/transactions/new"
+        aria-label={t('Add transaction')}
+        style={{
+          ...styles.noTapHighlight,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          marginTop: -20,
+          backgroundColor: theme.buttonPrimaryBackground,
+          color: theme.buttonPrimaryText,
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+          textDecoration: 'none',
+        }}
+      >
+        <SvgAdd width={20} height={20} />
+      </NavLink>
+    </View>
   );
 }
