@@ -9,6 +9,7 @@ import { getNormalisedString } from '@actual-app/core/shared/normalisation';
 import type { PayeeEntity, RuleEntity } from '@actual-app/core/types/models';
 
 import { Search } from '#components/common/Search';
+import { MobileUsageGuide } from '#components/mobile/MobileUsageGuide';
 import { MobilePageHeader, Page } from '#components/Page';
 import { useNavigate } from '#hooks/useNavigate';
 import { usePayeeRuleCounts } from '#hooks/usePayeeRuleCounts';
@@ -134,6 +135,14 @@ export function MobilePayeesPage() {
           }}
         />
       </View>
+      <MobileUsageGuide
+        title={t('How to use payees')}
+        items={[
+          t('Payees are the people, stores, banks or services linked to your transactions.'),
+          t('Search to find one quickly, tap a payee to rename it, or use rules to automate future transactions.'),
+          t('Keep names clear and consistent so your reports, categories and recurring payments stay organized.'),
+        ]}
+      />
       <PayeesList
         payees={filteredPayees}
         ruleCounts={ruleCounts}

@@ -22,7 +22,6 @@ import { TextOneLine } from '@actual-app/components/text-one-line';
 import { theme } from '@actual-app/components/theme';
 import { View } from '@actual-app/components/view';
 import { isPreviewId } from '@actual-app/core/shared/transactions';
-import { integerToCurrency } from '@actual-app/core/shared/util';
 import type { IntegerAmount } from '@actual-app/core/shared/util';
 import type {
   AccountEntity,
@@ -39,6 +38,7 @@ import { useAccount } from '#hooks/useAccount';
 import { useCachedSchedules } from '#hooks/useCachedSchedules';
 import { useCategories } from '#hooks/useCategories';
 import { useDisplayPayee } from '#hooks/useDisplayPayee';
+import { useFormat } from '#hooks/useFormat';
 import { usePayee } from '#hooks/usePayee';
 import { NotesTagFormatter } from '#notes/NotesTagFormatter';
 import { useSelector } from '#redux';
@@ -86,6 +86,7 @@ export function TransactionListItem({
   ...itemProps
 }: TransactionListItemProps) {
   const { t } = useTranslation();
+  const format = useFormat();
   const { data: { list: categories } = { list: [] } } = useCategories();
 
   const { data: payee } = usePayee(transaction?.payee);
@@ -153,9 +154,16 @@ export function TransactionListItem({
         {...itemProps}
         style={{
           userSelect: 'none',
-          height: ROW_HEIGHT,
-          width: '100%',
-          borderRadius: 0,
+          minHeight: ROW_HEIGHT,
+          width: 'calc(100% - 16px)',
+          margin: '3px 8px',
+          borderRadius: 8,
+          overflow: 'hidden',
+          boxShadow: itemProps.isSelected
+            ? `0 0 0 2px color-mix(in srgb, ${theme.mobileTransactionSelected} 45%, transparent), 0 10px 24px rgba(0, 0, 0, 0.16)`
+            : '0 4px 12px rgba(0, 0, 0, 0.08)',
+          transition:
+            'background-color 150ms ease, box-shadow 150ms ease, transform 150ms ease',
           ...(itemProps.isSelected
             ? {
                 borderWidth: '0 0 0 4px',
@@ -163,8 +171,8 @@ export function TransactionListItem({
                 borderStyle: 'solid',
               }
             : {
-                borderWidth: '0 0 1px 0',
-                borderColor: theme.tableBorder,
+                borderWidth: 1,
+                borderColor: theme.cardBorder,
                 borderStyle: 'solid',
               }),
           ...(isPreview
@@ -173,6 +181,7 @@ export function TransactionListItem({
               }
             : {
                 backgroundColor: theme.tableBackground,
+                backgroundImage: `linear-gradient(90deg, color-mix(in srgb, ${theme.tableBackground} 94%, ${theme.mobileNavItemSelected}), ${theme.tableBackground})`,
               }),
         }}
       >
@@ -182,10 +191,11 @@ export function TransactionListItem({
             flex: 1,
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '0 4px',
+            padding: '8px 10px',
+            minWidth: 0,
           }}
         >
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, minWidth: 0 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <PayeeIcons
                 transaction={transaction}
@@ -194,7 +204,8 @@ export function TransactionListItem({
               <TextOneLine
                 style={{
                   ...textStyle,
-                  fontWeight: isAdded ? '600' : '400',
+                  fontWeight: isAdded ? '800' : '700',
+                  color: theme.pageText,
                   ...(!displayPayee && !isPreview
                     ? {
                         color: theme.pageTextLight,
@@ -214,6 +225,7 @@ export function TransactionListItem({
                   flexDirection: 'row',
                   alignItems: 'center',
                   marginTop: 3,
+                  minWidth: 0,
                 }}
               >
                 {isReconciled ? (
@@ -250,13 +262,17 @@ export function TransactionListItem({
                   style={{
                     fontSize: 11,
                     marginTop: 1,
-                    fontWeight: '400',
+                    fontWeight: '700',
                     color: prettyCategory
-                      ? theme.tableText
+                      ? theme.pillText
                       : theme.menuItemTextSelected,
                     fontStyle:
                       specialCategory || !prettyCategory ? 'italic' : undefined,
                     textAlign: 'left',
+                    backgroundColor: `color-mix(in srgb, ${theme.pillBackgroundLight} 82%, transparent)`,
+                    border: `1px solid ${theme.pillBorder}`,
+                    borderRadius: 999,
+                    padding: '2px 8px',
                   }}
                 >
                   {prettyCategory || t('Uncategorized')}
@@ -278,19 +294,28 @@ export function TransactionListItem({
               </TextOneLine>
             )}
           </View>
-          <View style={{ justifyContent: 'center', alignItems: 'flex-end' }}>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'flex-end',
+              minWidth: 92,
+              marginLeft: 8,
+            }}
+          >
             <Text
               style={{
                 ...styles.tnum,
                 ...makeAmountFullStyle(amount, {
-                  positiveColor: theme.tableText,
-                  negativeColor: theme.tableText,
+                  positiveColor: theme.numberPositive,
+                  negativeColor: theme.numberNegative,
                   zeroColor: theme.numberNeutral,
                 }),
                 ...textStyle,
+                fontSize: 15,
+                fontWeight: 800,
               }}
             >
-              {integerToCurrency(amount)}
+              {format(amount, 'financial')}
             </Text>
             {showRunningBalance && runningBalance !== undefined && (
               <Text
@@ -305,7 +330,7 @@ export function TransactionListItem({
                   }),
                 }}
               >
-                {integerToCurrency(runningBalance)}
+                {format(runningBalance, 'financial')}
               </Text>
             )}
           </View>

@@ -25,6 +25,10 @@ import { useFormat } from '#hooks/useFormat';
 import { useSyncedPref } from '#hooks/useSyncedPref';
 import { envelopeBudget, trackingBudget } from '#spreadsheet/bindings';
 
+import {
+  cashFlowTypeShortLabels,
+  classifyCashFlowGroup,
+} from './cashFlowClassification';
 import { getColumnWidth, ROW_HEIGHT } from './BudgetTable';
 import { ExpenseCategoryList } from './ExpenseCategoryList';
 
@@ -142,11 +146,11 @@ export function ExpenseGroupHeader({
         cursor: 'pointer',
         height: ROW_HEIGHT,
         borderBottomWidth: 1,
-        borderColor: theme.tableBorder,
+        borderColor: `color-mix(in srgb, ${theme.tableBorder} 45%, transparent)`,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 5,
-        paddingRight: 5,
+        paddingLeft: 12,
+        paddingRight: 8,
         opacity: isHidden ? 0.5 : undefined,
         backgroundColor: monthUtils.isCurrentMonth(month)
           ? theme.budgetHeaderCurrentMonth
@@ -189,6 +193,7 @@ function ExpenseGroupName({
     isSidebar: true,
     offset: -3.5,
   });
+  const cashFlowType = classifyCashFlowGroup(group);
   return (
     <View
       style={{
@@ -235,6 +240,7 @@ function ExpenseGroupName({
         variant="bare"
         style={{
           maxWidth: sidebarColumnWidth,
+          minWidth: 0,
         }}
         onPress={() => onEditCategoryGroup(group.id)}
       >
@@ -243,20 +249,46 @@ function ExpenseGroupName({
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'flex-start',
+            minWidth: 0,
           }}
         >
           <Text
             style={{
               ...styles.lineClamp(2),
-              width: sidebarColumnWidth,
+              flex: '1 1 auto',
+              minWidth: 0,
               textAlign: 'left',
               ...styles.smallText,
-              fontWeight: '500',
+              fontSize: 13,
+              fontWeight: '600',
+              letterSpacing: 0,
             }}
             data-testid="category-group-name"
           >
             {group.name}
           </Text>
+          <View
+            style={{
+              borderRadius: 999,
+              padding: '2px 6px',
+              marginLeft: 4,
+              backgroundColor: theme.pillBackgroundLight,
+              border: `1px solid ${theme.pillBorder}`,
+              flexShrink: 0,
+              maxWidth: 58,
+            }}
+          >
+            <Text
+              style={{
+                color: theme.pillText,
+                fontSize: 9,
+                fontWeight: 800,
+                textTransform: 'uppercase',
+              }}
+            >
+              {cashFlowTypeShortLabels[cashFlowType]}
+            </Text>
+          </View>
           <SvgCheveronRight
             style={{ flexShrink: 0, color: theme.tableTextSubdued }}
             width={14}

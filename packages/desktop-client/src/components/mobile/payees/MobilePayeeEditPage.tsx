@@ -12,6 +12,7 @@ import type { PayeeEntity } from '@actual-app/core/types/models';
 
 import { MobileBackButton } from '#components/mobile/MobileBackButton';
 import { InputField } from '#components/mobile/MobileForms';
+import { MobileUsageGuide } from '#components/mobile/MobileUsageGuide';
 import { MobilePageHeader, Page } from '#components/Page';
 import { useNavigate } from '#hooks/useNavigate';
 import { usePayees } from '#hooks/usePayees';
@@ -140,6 +141,13 @@ export function MobilePayeeEditPage() {
       }
     >
       <View style={{ paddingTop: 20 }}>
+        <MobileUsageGuide
+          title={t('Payee name')}
+          items={[
+            t('Use a simple name you will recognize later, like a store, employer, bank or subscription.'),
+            t('Renaming a payee keeps your history organized and makes rules easier to understand.'),
+          ]}
+        />
         <InputField
           placeholder={t('Payee name')}
           value={editedPayeeName}

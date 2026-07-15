@@ -28,6 +28,7 @@ import { isAccountFailedSync } from '#accounts/syncStatus';
 import { makeAmountFullStyle } from '#components/budget/util';
 import { MOBILE_NAV_HEIGHT } from '#components/mobile/MobileNavTabs';
 import { PullToRefresh } from '#components/mobile/PullToRefresh';
+import { MobileUsageGuide } from '#components/mobile/MobileUsageGuide';
 import { MobilePageHeader, Page } from '#components/Page';
 import { CellValue, CellValueText } from '#components/spreadsheet/CellValue';
 import { useAccounts } from '#hooks/useAccounts';
@@ -69,19 +70,27 @@ function AccountHeader<SheetFieldName extends SheetFields<'account'>>({
       aria-label={t('View {{name}} transactions', { name })}
       onPress={onPress ? onPress : () => navigate(`/accounts/${id}`)}
       style={{
-        height: ROW_HEIGHT,
+        minHeight: ROW_HEIGHT,
         width: '100%',
-        padding: '0 18px',
-        color: theme.pageTextLight,
+        margin: '12px 10px 8px',
+        padding: '12px 14px',
+        color: theme.pageText,
+        backgroundColor: theme.cardBackground,
+        backgroundImage: `linear-gradient(135deg, color-mix(in srgb, ${theme.cardBackground} 82%, ${theme.mobileNavItemSelected}), ${theme.cardBackground} 60%, color-mix(in srgb, ${theme.cardBackground} 93%, ${theme.pageBackgroundBottomRight}))`,
+        border: `1px solid ${theme.cardBorder}`,
+        borderRadius: 8,
+        boxShadow: '0 10px 26px rgba(0, 0, 0, 0.12)',
         ...style,
       }}
       // to match the feel of the other account buttons
       className={css([
         {
           '&[data-pressed], &[data-hovered]': {
-            backgroundColor: 'transparent',
+            backgroundColor: `color-mix(in srgb, ${theme.mobileNavItemSelected} 10%, transparent)`,
             transform: 'translateY(1px)',
           },
+          transition:
+            'background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease',
         },
       ])}
     >
@@ -89,7 +98,9 @@ function AccountHeader<SheetFieldName extends SheetFields<'account'>>({
         <Text
           style={{
             ...styles.text,
-            fontSize: 17,
+            fontSize: 15,
+            fontWeight: 800,
+            letterSpacing: 0,
           }}
           data-testid="name"
         >
@@ -98,7 +109,7 @@ function AccountHeader<SheetFieldName extends SheetFields<'account'>>({
         <Cheveron
           style={{
             flexShrink: 0,
-            color: theme.mobileHeaderTextSubdued,
+            color: theme.mobileNavItemSelected,
             marginLeft: 5,
           }}
           width={styles.text.fontSize}
@@ -109,7 +120,12 @@ function AccountHeader<SheetFieldName extends SheetFields<'account'>>({
         {props => (
           <CellValueText<'account', SheetFieldName>
             {...props}
-            style={{ ...styles.text }}
+            style={{
+              ...styles.text,
+              fontSize: 17,
+              fontWeight: 800,
+              color: theme.pageText,
+            }}
           />
         )}
       </CellValue>
@@ -149,7 +165,7 @@ function AccountListItem({
     <ListBoxItem
       textValue={account.name}
       className={css({
-        borderBottom: `1px solid ${theme.tableBorder}`,
+        borderBottom: `1px solid color-mix(in srgb, ${theme.tableBorder} 70%, transparent)`,
         '&:last-child': {
           borderBottom: 'none',
         },
@@ -163,9 +179,12 @@ function AccountListItem({
             height: ROW_HEIGHT,
             width: '100%',
             backgroundColor: theme.tableBackground,
+            backgroundImage: `linear-gradient(90deg, color-mix(in srgb, ${theme.tableBackground} 94%, ${theme.mobileNavItemSelected}), ${theme.tableBackground})`,
             border: 'none',
             borderRadius: 0,
-            paddingLeft: 8,
+            padding: '0 12px',
+            transition:
+              'background-color 150ms ease, transform 150ms ease, filter 150ms ease',
           }}
           data-testid="account-list-item"
           onPress={() => onSelect(account)}
@@ -185,18 +204,21 @@ function AccountListItem({
                     ? theme.sidebarItemBackgroundFailed
                     : theme.sidebarItemBackgroundPositive,
                 marginRight: '6px',
-                width: 8,
+                width: 9,
                 flexShrink: 0,
-                height: 8,
-                borderRadius: 8,
+                height: 34,
+                borderRadius: 999,
                 opacity: isConnected ? 1 : 0,
+                boxShadow: isConnected
+                  ? '0 0 18px rgba(0, 0, 0, 0.18)'
+                  : undefined,
               }}
             />
             <TextOneLine
               style={{
                 ...styles.text,
-                fontSize: 17,
-                fontWeight: 600,
+                fontSize: 16,
+                fontWeight: 700,
                 color: isUpdated ? theme.mobileAccountText : theme.pillText,
               }}
               data-testid="account-name"
@@ -318,6 +340,14 @@ function AllAccountList({
           aria-label={t('Account list')}
           style={{ paddingBottom: MOBILE_NAV_HEIGHT }}
         >
+          <MobileUsageGuide
+            title={t('How to use accounts')}
+            items={[
+              t('Accounts show where your money lives: cash, bank accounts, cards or closed accounts.'),
+              t('Tap an account to review its transactions, balance and recent movement.'),
+              t('Pull down to sync or refresh when you want the latest information.'),
+            ]}
+          />
           <AccountHeader
             id="all"
             name={t('All accounts')}
@@ -470,9 +500,11 @@ const AccountList = forwardRef<HTMLDivElement, AccountListProps>(
           display: 'flex',
           flexDirection: 'column',
           margin: '0 8px',
-          border: `1px solid ${theme.tableBorder}`,
+          backgroundColor: theme.tableBackground,
+          border: `1px solid ${theme.cardBorder}`,
           borderRadius: 8,
           overflow: 'hidden',
+          boxShadow: '0 10px 24px rgba(0, 0, 0, 0.10)',
         }}
       >
         {account => (

@@ -1,7 +1,7 @@
 {
-  "name": "Actual",
-  "short_name": "Actual",
-  "description": "A local-first personal finance tool",
+  "name": "Mis Finanzas",
+  "short_name": "Mis Finanzas",
+  "description": "Mi herramienta personal de finanzas",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

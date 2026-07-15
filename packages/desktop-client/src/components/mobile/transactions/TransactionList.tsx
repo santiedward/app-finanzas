@@ -32,7 +32,7 @@ import { validForMerge } from '@actual-app/core/shared/merge';
 import * as monthUtils from '@actual-app/core/shared/months';
 import { isPreviewId } from '@actual-app/core/shared/transactions';
 import { validForTransfer } from '@actual-app/core/shared/transfer';
-import { groupById, integerToCurrency } from '@actual-app/core/shared/util';
+import { groupById } from '@actual-app/core/shared/util';
 import type { IntegerAmount } from '@actual-app/core/shared/util';
 import type {
   CategoryEntity,
@@ -42,6 +42,7 @@ import type {
 import { FloatingActionBar } from '#components/mobile/FloatingActionBar';
 import { useAccounts } from '#hooks/useAccounts';
 import { useCategoriesById } from '#hooks/useCategories';
+import { useFormat } from '#hooks/useFormat';
 import { useLocale } from '#hooks/useLocale';
 import { useNavigate } from '#hooks/useNavigate';
 import { usePayees } from '#hooks/usePayees';
@@ -208,16 +209,20 @@ export function TransactionList({
                 <Header
                   style={{
                     ...styles.smallText,
-                    backgroundColor: theme.pageBackground,
+                    backgroundColor: `color-mix(in srgb, ${theme.mobilePageBackground} 88%, ${theme.cardBackground})`,
                     color: theme.tableHeaderText,
                     display: 'flex',
                     justifyContent: 'center',
-                    paddingBottom: 4,
-                    paddingTop: 4,
+                    paddingBottom: 6,
+                    paddingTop: 8,
                     position: 'sticky',
                     top: '0',
                     width: '100%',
                     zIndex: 10,
+                    borderBottom: `1px solid ${theme.tableBorder}`,
+                    textTransform: 'uppercase',
+                    fontWeight: 800,
+                    letterSpacing: 0,
                   }}
                 >
                   {monthUtils.format(section.date, 'MMMM dd, yyyy', locale)}
@@ -280,6 +285,7 @@ function SelectedTransactionsFloatingActionBar({
   showMakeTransfer,
 }: SelectedTransactionsFloatingActionBarProps) {
   const { t } = useTranslation();
+  const format = useFormat();
   const editMenuTriggerRef = useRef(null);
   const [isEditMenuOpen, setIsEditMenuOpen] = useState(false);
   const moreOptionsMenuTriggerRef = useRef(null);
@@ -502,7 +508,7 @@ function SelectedTransactionsFloatingActionBar({
                       case 'amount':
                         displayValue = Number.isNaN(Number(value))
                           ? value
-                          : integerToCurrency(Number(value));
+                          : format(Number(value), 'financial');
                         break;
                       case 'notes':
                         displayValue = `${mode} with ${String(value)}`;

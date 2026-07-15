@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { Select } from '@actual-app/components/select';
@@ -73,7 +73,8 @@ export function CurrencySettings() {
   const [defaultCurrencyCode, setDefaultCurrencyCodePref] = useSyncedPref(
     'defaultCurrencyCode',
   );
-  const selectedCurrencyCode = defaultCurrencyCode || '';
+  const selectedCurrencyCode = defaultCurrencyCode || 'COP';
+  const [, setCurrencyFeatureEnabledPref] = useSyncedPref('flags.currency');
 
   const [symbolPosition, setSymbolPositionPref] = useSyncedPref(
     'currencySymbolPosition',
@@ -102,13 +103,37 @@ export function CurrencySettings() {
     ];
   });
 
+  const priorityCurrencyOptions: [string, string][] = ['COP', 'USD', 'EUR']
+    .map(code => currencyOptions.find(([currencyCode]) => currencyCode === code))
+    .filter((option): option is [string, string] => option != null);
+
+  const otherCurrencyOptions = currencyOptions.filter(
+    ([code]) => !['', 'COP', 'USD', 'EUR'].includes(code),
+  );
+
+  const displayCurrencyOptions: [string, string][] = [
+    ...priorityCurrencyOptions,
+    ...otherCurrencyOptions,
+  ];
+
+  useEffect(() => {
+    if (!defaultCurrencyCode) {
+      handleCurrencyChange('COP');
+    }
+    // Only initialize once when this settings panel mounts without a currency.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleCurrencyChange = (code: string) => {
+    setCurrencyFeatureEnabledPref('true');
     setDefaultCurrencyCodePref(code);
     if (code !== '') {
       const cur = getCurrency(code);
       setNumberFormatPref(cur.numberFormat);
       setHideFractionPref(cur.decimalPlaces === 0 ? 'true' : 'false');
-      setSpaceEnabledPref(cur.symbolFirst ? 'false' : 'true');
+      setSpaceEnabledPref(
+        !cur.symbolFirst || cur.symbol.length > 1 ? 'true' : 'false',
+      );
       setSymbolPositionPref(cur.symbolFirst ? 'before' : 'after');
     }
   };
@@ -146,7 +171,7 @@ export function CurrencySettings() {
               <Select
                 value={selectedCurrencyCode}
                 onChange={handleCurrencyChange}
-                options={currencyOptions}
+                options={displayCurrencyOptions}
                 className={selectButtonClassName}
                 style={{ width: '100%' }}
               />
@@ -199,9 +224,8 @@ export function CurrencySettings() {
       <Text>
         <Trans>
           <strong>Currency settings</strong> affect how amounts are displayed
-          throughout the application. Changing the currency will affect the
-          number format, symbol position, and whether fractions are shown. These
-          can be adjusted after the currency is set.
+          throughout the application. Changing the currency updates the display
+          format only; it does not convert balances using exchange rates.
         </Trans>
       </Text>
     </Setting>

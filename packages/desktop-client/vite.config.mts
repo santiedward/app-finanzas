@@ -166,12 +166,12 @@ const lootCoreBackend = (): Plugin => ({
         'vite',
         'build',
         '--config',
-        lootCoreConfig,
+        `"${lootCoreConfig}"`,
         '--mode',
         'development',
         '--watch',
       ],
-      { cwd: lootCoreRoot, stdio: 'inherit' },
+      { cwd: lootCoreRoot, stdio: 'inherit', shell: true },
     );
     child.on('error', err => {
       server.config.logger.error(

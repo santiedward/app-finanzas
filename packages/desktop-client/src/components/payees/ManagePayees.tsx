@@ -15,6 +15,7 @@ import type { Diff } from '@actual-app/core/shared/util';
 import type { PayeeEntity } from '@actual-app/core/types/models';
 
 import { Search } from '#components/common/Search';
+import { MobileUsageGuide } from '#components/mobile/MobileUsageGuide';
 import { Cell, SelectCell, TableHeader } from '#components/table';
 import {
   SelectedProvider,
@@ -286,6 +287,15 @@ export const ManagePayees = ({
           onChange={applyFilter}
         />
       </View>
+
+      <MobileUsageGuide
+        title={t('How to use payees')}
+        items={[
+          t('Payees are the people, stores, banks or services linked to your transactions.'),
+          t('Use the search box to find a payee, select rows for bulk actions, or create rules for repeated transactions.'),
+          t('Keep names clear and consistent so reports, categories and recurring payments stay organized.'),
+        ]}
+      />
 
       <SelectedProvider instance={selected} fetchAllIds={getSelectableIds}>
         <View style={styles.tableContainer}>

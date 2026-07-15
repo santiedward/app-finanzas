@@ -204,6 +204,8 @@ export function FinancesApp() {
         style={{
           flexDirection: 'row',
           backgroundColor: theme.pageBackground,
+          backgroundImage: `radial-gradient(ellipse 1200px 800px at 0% 0%, ${theme.pageBackgroundTopLeft}, transparent 60%), radial-gradient(ellipse 1200px 900px at 100% 100%, ${theme.pageBackgroundBottomRight}, transparent 60%)`,
+          backgroundAttachment: 'fixed',
           flex: 1,
         }}
       >
@@ -212,7 +214,7 @@ export function FinancesApp() {
         <View
           style={{
             color: theme.pageText,
-            backgroundColor: theme.pageBackground,
+            backgroundColor: 'transparent',
             flex: 1,
             overflow: 'hidden',
             width: '100%',

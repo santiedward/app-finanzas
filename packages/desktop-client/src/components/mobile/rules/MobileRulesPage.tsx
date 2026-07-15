@@ -11,6 +11,7 @@ import { q } from '@actual-app/core/shared/query';
 import type { RuleEntity } from '@actual-app/core/types/models';
 
 import { Search } from '#components/common/Search';
+import { MobileUsageGuide } from '#components/mobile/MobileUsageGuide';
 import { ruleToString } from '#components/ManageRules';
 import { MobilePageHeader, Page } from '#components/Page';
 import { useAccounts } from '#hooks/useAccounts';
@@ -196,6 +197,14 @@ export function MobileRulesPage() {
           }}
         />
       </View>
+      <MobileUsageGuide
+        title={t('How to use rules')}
+        items={[
+          t('Rules automate repetitive edits, like assigning a category when a payee appears.'),
+          t('Create a rule from a frequent payee, account or note so future transactions need less manual work.'),
+          t('Review rules from time to time to keep imports clean and avoid duplicated patterns.'),
+        ]}
+      />
       <RulesList
         rules={filteredRules}
         isLoading={isLoading}

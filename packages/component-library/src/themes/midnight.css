@@ -15,7 +15,7 @@
   --color-pageTextLinkLight: var(--palette-purple300);
 
   --color-cardBackground: var(--palette-gray800);
-  --color-cardBorder: var(--palette-purple300);
+  --color-cardBorder: var(--palette-gray600);
   --color-cardShadow: var(--palette-gray900);
 
   --color-tableBackground: var(--palette-gray800);

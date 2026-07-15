@@ -95,6 +95,8 @@ export function Sidebar() {
             color: theme.sidebarItemText,
             height: '100%',
             backgroundColor: theme.sidebarBackground,
+            borderRight: `1px solid ${theme.cardBorder}`,
+            boxShadow: '10px 0 32px rgba(0, 0, 0, 0.14)',
             '& .float': {
               opacity: isFloating ? 1 : 0,
               transition: 'opacity .25s, width .25s',
@@ -117,6 +119,7 @@ export function Sidebar() {
           <View
             style={{
               flexGrow: 1,
+              paddingTop: 4,
               '@media screen and (max-height: 480px)': {
                 overflowY: 'auto',
               },

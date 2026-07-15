@@ -35,8 +35,8 @@ function TransactionSearchInput({
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: theme.mobilePageBackground,
-        padding: 10,
+        backgroundColor: 'transparent',
+        padding: '0 10px 10px',
         width: '100%',
       }}
     >
@@ -50,8 +50,10 @@ function TransactionSearchInput({
         width="100%"
         height={styles.mobileMinHeight}
         style={{
-          backgroundColor: theme.tableBackground,
-          borderColor: theme.formInputBorder,
+          backgroundColor: theme.cardBackground,
+          border: `1px solid ${theme.formInputBorder}`,
+          borderRadius: 14,
+          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.08)',
         }}
       />
     </View>
@@ -110,13 +112,20 @@ export function TransactionListWithBalances({
         <View
           style={{
             flexShrink: 0,
-            marginTop: 10,
+            margin: '10px 10px 0',
+            backgroundColor: theme.cardBackground,
+            backgroundImage: `linear-gradient(135deg, color-mix(in srgb, ${theme.cardBackground} 84%, ${theme.mobileNavItemSelected}), ${theme.cardBackground} 56%, color-mix(in srgb, ${theme.cardBackground} 94%, ${theme.pageBackgroundBottomRight}))`,
+            border: `1px solid ${theme.cardBorder}`,
+            borderRadius: 8,
+            boxShadow: '0 12px 28px rgba(0, 0, 0, 0.14)',
+            overflow: 'hidden',
           }}
         >
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-evenly',
+              padding: '12px 10px 10px',
             }}
           >
             {balanceCleared && balanceUncleared ? (
@@ -261,16 +270,25 @@ type BalanceProps = {
 function Balance({ balance }: BalanceProps) {
   const { t } = useTranslation();
   return (
-    <View style={{ flexBasis: '33%' }}>
-      <Label title={t('Balance')} style={{ textAlign: 'center' }} />
+    <View style={{ flexBasis: '33%', alignItems: 'center' }}>
+      <Label
+        title={t('Balance')}
+        style={{
+          textAlign: 'center',
+          color: theme.tableHeaderText,
+          fontSize: 11,
+          fontWeight: 700,
+          textTransform: 'uppercase',
+        }}
+      />
       <TransactionListBalanceCellValue binding={balance} type="financial">
         {props => (
           <CellValueText
             {...props}
             style={{
-              fontSize: 18,
+              fontSize: 20,
               textAlign: 'center',
-              fontWeight: '500',
+              fontWeight: '800',
               color:
                 props.value < 0
                   ? theme.numberNegative

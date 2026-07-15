@@ -37,6 +37,7 @@ import { WelcomeScreen } from './WelcomeScreen';
 
 function Version() {
   const version = useServerVersion();
+  const appVersion = window.Actual?.ACTUAL_VERSION ?? '26.7.0';
 
   return (
     <Text
@@ -56,8 +57,7 @@ function Version() {
       }}
     >
       <Trans>
-        App: v{{ appVersion: window.Actual.ACTUAL_VERSION }} | Server:{' '}
-        {{ serverVersion: version }}
+        App: v{{ appVersion }} | Server: {{ serverVersion: version }}
       </Trans>
     </Text>
   );

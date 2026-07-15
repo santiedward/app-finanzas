@@ -83,7 +83,7 @@ export function ToBudgetAmount({
               className={css([
                 styles.veryLargeText,
                 {
-                  fontWeight: 400,
+                  fontWeight: 800,
                   userSelect: 'none',
                   cursor: 'pointer',
                   color: isPositive
@@ -91,7 +91,13 @@ export function ToBudgetAmount({
                     : isNegative
                       ? theme.toBudgetNegative
                       : theme.toBudgetZero,
+                  letterSpacing: 0,
                   marginBottom: -1,
+                  textShadow: isPositive
+                    ? `0 10px 28px color-mix(in srgb, ${theme.toBudgetPositive} 28%, transparent)`
+                    : isNegative
+                      ? `0 10px 28px color-mix(in srgb, ${theme.toBudgetNegative} 22%, transparent)`
+                      : 'none',
                   borderBottom: '1px solid transparent',
                   ':hover': {
                     borderColor: isPositive

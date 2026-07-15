@@ -60,6 +60,9 @@ export function MobilePageHeader({
         flexShrink: 0,
         height: HEADER_HEIGHT,
         backgroundColor: theme.mobileHeaderBackground,
+        backgroundImage: `linear-gradient(135deg, color-mix(in srgb, ${theme.mobileHeaderBackground} 86%, ${theme.mobileNavItemSelected}), ${theme.mobileHeaderBackground} 58%, color-mix(in srgb, ${theme.mobileHeaderBackground} 88%, ${theme.pageBackgroundBottomRight}))`,
+        borderBottom: `1px solid ${theme.cardBorder}`,
+        boxShadow: '0 10px 26px rgba(0, 0, 0, 0.16)',
         '& *': {
           color: theme.mobileHeaderText,
         },
@@ -86,7 +89,8 @@ export function MobilePageHeader({
           flexDirection: 'row',
           flexBasis: '50%',
           fontSize: 17,
-          fontWeight: 500,
+          fontWeight: 800,
+          letterSpacing: 0,
           overflowY: 'auto',
           display: 'flex',
           margin: 0,
@@ -146,6 +150,7 @@ export function MobilePageHeaderSlot({ style }: MobilePageHeaderSlotProps) {
         flexShrink: 0,
         minHeight: HEADER_HEIGHT,
         backgroundColor: theme.mobileHeaderBackground,
+        backgroundImage: `linear-gradient(135deg, color-mix(in srgb, ${theme.mobileHeaderBackground} 86%, ${theme.mobileNavItemSelected}), ${theme.mobileHeaderBackground})`,
         ...style,
       }}
     />
@@ -195,6 +200,7 @@ export function Page({ header, style, padding, children, footer }: PageProps) {
         style={{
           flex: 1,
           backgroundColor: theme.mobilePageBackground,
+          backgroundImage: `radial-gradient(circle at 12% 0%, color-mix(in srgb, ${theme.pageBackgroundTopLeft} 48%, transparent), transparent 34%), radial-gradient(circle at 92% 18%, color-mix(in srgb, ${theme.pageBackgroundBottomRight} 35%, transparent), transparent 38%)`,
           ...style,
         }}
       >
@@ -212,7 +218,7 @@ export function Page({ header, style, padding, children, footer }: PageProps) {
       style={{
         ...styles.page,
         flex: 1,
-        backgroundColor: theme.pageBackground,
+        backgroundColor: 'transparent',
         ...style,
       }}
     >

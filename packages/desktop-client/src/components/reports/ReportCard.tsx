@@ -70,12 +70,15 @@ export function ReportCard({
       ref={ref}
       style={{
         backgroundColor: theme.tableBackground,
-        borderBottomLeftRadius: 2,
-        borderBottomRightRadius: 2,
+        backgroundImage: `linear-gradient(145deg, color-mix(in srgb, ${theme.tableBackground} 86%, ${theme.mobileNavItemSelected}), ${theme.tableBackground} 52%, color-mix(in srgb, ${theme.tableBackground} 94%, ${theme.pageBackgroundBottomRight}))`,
+        borderRadius: 8,
+        border: `1px solid ${theme.cardBorder}`,
+        overflow: 'hidden',
         width: '100%',
         height: '100%',
-        boxShadow: '0 2px 6px rgba(0, 0, 0, .15)',
-        transition: 'box-shadow .25s',
+        boxShadow:
+          '0 1px 2px rgba(16, 20, 32, 0.08), 0 14px 32px rgba(16, 20, 32, 0.14)',
+        transition: 'box-shadow .25s, transform .25s',
         ...(isEditing
           ? {
               '& .recharts-surface:hover': {
@@ -91,7 +94,13 @@ export function ReportCard({
               },
             }),
         ':hover': {
-          ...(to ? { boxShadow: '0 4px 6px rgba(0, 0, 0, .15)' } : null),
+          ...(to
+            ? {
+                boxShadow:
+                  '0 2px 4px rgba(16, 20, 32, 0.10), 0 18px 36px rgba(16, 20, 32, 0.20)',
+                transform: 'translateY(-1px)',
+              }
+            : null),
           ...(isEditing ? { cursor: 'move', filter: 'grayscale(0)' } : null),
         },
         ...(to ? null : containerProps),

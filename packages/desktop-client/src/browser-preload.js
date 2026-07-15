@@ -21,6 +21,22 @@ const ACTUAL_VERSION = Platform.isPlaywright
     ? '.preview'
     : packageJson.version;
 
+globalThis.Actual = {
+  IS_DEV,
+  ACTUAL_VERSION,
+  isUpdateReadyForDownload: () => false,
+  waitForUpdateReadyForDownload: () => Promise.resolve(false),
+  applyAppUpdate: async () => {
+    window.location.reload();
+  },
+  relaunch: () => {
+    window.location.reload();
+  },
+  reload: () => {
+    window.location.reload();
+  },
+};
+
 // *** Start the backend ***
 //
 // The multi-tab coordinator (leader/follower over SharedWorker), the direct
@@ -62,7 +78,7 @@ const updateSW = IS_DEV
       onNeedRefresh: markUpdateReadyForDownload,
     });
 
-global.Actual = {
+Object.assign(globalThis.Actual, {
   IS_DEV,
   ACTUAL_VERSION,
 
@@ -230,4 +246,4 @@ global.Actual = {
   moveBudgetDirectory: () => {
     // Only for electron app
   },
-};
+});

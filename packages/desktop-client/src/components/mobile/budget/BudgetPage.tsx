@@ -45,6 +45,7 @@ import {
 import { closeBudget } from '#budgetfiles/budgetfilesSlice';
 import { prewarmMonth } from '#components/budget/util';
 import { FinancialText } from '#components/FinancialText';
+import { MobileUsageGuide } from '#components/mobile/MobileUsageGuide';
 import { MobilePageHeader, Page } from '#components/Page';
 import { SyncRefresh } from '#components/SyncRefresh';
 import { useCategories } from '#hooks/useCategories';
@@ -609,6 +610,14 @@ export function BudgetPage() {
         >
           {({ onRefresh }) => (
             <>
+              <MobileUsageGuide
+                title={t('How to use your budget')}
+                items={[
+                  t('Start with the cash flow summary to see income, spending, free percentage and accumulated balance.'),
+                  t('Open a category to review transactions, adjust the budget or understand where the money is going.'),
+                  t('Use the month selector to compare periods and keep your plan updated each month.'),
+                ]}
+              />
               <Banners month={startMonth} onBudgetAction={onBudgetAction} />
               <BudgetTable
                 // This key forces the whole table rerender when the number

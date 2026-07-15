@@ -150,7 +150,8 @@ export function useFormat(): UseFormatResult {
         valueWithoutSign = formattedNumericValue.slice(1);
       }
 
-      const space = spaceEnabledPref === 'true' ? '\u202F' : '';
+      const space =
+        spaceEnabledPref === 'true' || currencySymbol.length > 1 ? '\u202F' : '';
       const position = symbolPositionPref || 'before';
 
       const styledAmount =

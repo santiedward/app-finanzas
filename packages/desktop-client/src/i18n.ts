@@ -24,7 +24,7 @@ void i18n
   .use(initReactI18next)
   .use(resourcesToBackend(loadLanguage))
   .init({
-    lng: 'en',
+    lng: 'es',
 
     // allow keys to be phrases having `:`, `.`
     nsSeparator: false,

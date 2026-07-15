@@ -13,6 +13,7 @@ import { getScheduledAmount } from '@actual-app/core/shared/schedules';
 import type { ScheduleEntity } from '@actual-app/core/types/models';
 
 import { Search } from '#components/common/Search';
+import { MobileUsageGuide } from '#components/mobile/MobileUsageGuide';
 import { MobilePageHeader, Page } from '#components/Page';
 import { useAccounts } from '#hooks/useAccounts';
 import { useDateFormat } from '#hooks/useDateFormat';
@@ -154,6 +155,14 @@ export function MobileSchedulesPage() {
           }}
         />
       </View>
+      <MobileUsageGuide
+        title={t('How to use schedules')}
+        items={[
+          t('Schedules help you remember recurring income, bills, subscriptions and planned payments.'),
+          t('Create one when a transaction repeats, then review the next date and expected amount before it happens.'),
+          t('Use search to find payments by payee, account, amount, date or status.'),
+        ]}
+      />
       <SchedulesList
         schedules={filteredSchedules}
         isLoading={isSchedulesLoading}

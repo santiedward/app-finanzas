@@ -507,8 +507,14 @@ export function Overview({ dashboard }: OverviewProps) {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginRight: 15,
+              margin: '16px 18px 10px',
+              padding: '12px 14px',
               alignItems: 'center',
+              border: `1px solid ${theme.cardBorder}`,
+              borderRadius: 8,
+              backgroundColor: `color-mix(in srgb, ${theme.cardBackground} 76%, transparent)`,
+              boxShadow:
+                '0 1px 2px rgba(16, 20, 32, 0.08), 0 12px 30px rgba(16, 20, 32, 0.10)',
             }}
           >
             <DashboardHeader dashboard={dashboard} />
@@ -756,7 +762,11 @@ export function Overview({ dashboard }: OverviewProps) {
           <View
             data-testid="reports-overview"
             innerRef={containerRef}
-            style={{ userSelect: 'none', paddingBottom: MOBILE_NAV_HEIGHT }}
+            style={{
+              userSelect: 'none',
+              padding: '0 8px',
+              paddingBottom: MOBILE_NAV_HEIGHT,
+            }}
           >
             {isMounted && (
               <ReactGridLayout

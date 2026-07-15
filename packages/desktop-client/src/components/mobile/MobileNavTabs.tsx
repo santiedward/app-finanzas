@@ -48,7 +48,7 @@ export function MobileNavTabs() {
   const navTabStyle = {
     flex: `1 1 ${100 / COLUMN_COUNT}%`,
     height: ROW_HEIGHT,
-    padding: 10,
+    padding: '8px 8px 10px',
     maxWidth: `${100 / COLUMN_COUNT}%`,
   };
 
@@ -219,8 +219,13 @@ export function MobileNavTabs() {
         y,
         touchAction: 'pan-x',
         backgroundColor: theme.mobileNavBackground,
-        borderTop: `1px solid ${theme.menuBorder}`,
-        ...styles.shadow,
+        backgroundImage: `linear-gradient(140deg, color-mix(in srgb, ${theme.mobileNavBackground} 92%, ${theme.mobileNavItemSelected}), ${theme.mobileNavBackground} 58%, color-mix(in srgb, ${theme.mobileNavBackground} 88%, ${theme.pageBackgroundBottomRight}))`,
+        backdropFilter: 'blur(18px)',
+        borderTop: `1px solid ${theme.cardBorder}`,
+        borderTopLeftRadius: 18,
+        borderTopRightRadius: 18,
+        boxShadow:
+          '0 -18px 44px rgba(0, 0, 0, 0.28), 0 -1px 0 rgba(255, 255, 255, 0.04)',
         height: TOTAL_HEIGHT + PILL_HEIGHT,
         width: '100%',
         position: 'fixed',
@@ -233,13 +238,14 @@ export function MobileNavTabs() {
       <View>
         <div
           style={{
-            backgroundColor: theme.pillBorder,
-            borderRadius: 10,
-            width: 30,
+            backgroundColor: theme.mobileNavItemSelected,
+            borderRadius: 999,
+            width: 34,
             marginTop: 5,
-            marginBottom: 5,
+            marginBottom: 6,
             padding: 2,
             alignSelf: 'center',
+            opacity: 0.72,
           }}
         />
         <View
@@ -278,12 +284,30 @@ function NavTab({ Icon: TabIcon, name, path, style, onClick }: NavTabProps) {
       style={({ isActive }) => ({
         ...styles.noTapHighlight,
         alignItems: 'center',
+        backgroundColor: isActive
+          ? `color-mix(in srgb, ${theme.mobileNavItemSelected} 18%, transparent)`
+          : 'transparent',
+        border: `1px solid ${
+          isActive
+            ? `color-mix(in srgb, ${theme.mobileNavItemSelected} 42%, transparent)`
+            : 'transparent'
+        }`,
+        borderRadius: 15,
         color: isActive ? theme.mobileNavItemSelected : theme.mobileNavItem,
         display: 'flex',
         flexDirection: 'column',
+        fontSize: 11,
+        fontWeight: isActive ? 700 : 600,
+        gap: 4,
+        justifyContent: 'center',
+        lineHeight: 1.15,
+        margin: '0 6px 8px',
         textDecoration: 'none',
         textAlign: 'center',
         textWrap: 'balance',
+        transform: isActive ? 'translateY(-1px)' : 'translateY(0)',
+        transition:
+          'background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease',
         userSelect: 'none',
         ...style,
       })}

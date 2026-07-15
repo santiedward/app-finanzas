@@ -44,8 +44,7 @@ export function DashboardHeader({ dashboard }: DashboardHeaderProps) {
         flexDirection: 'row',
         alignItems: 'center',
         whiteSpace: 'nowrap',
-        marginLeft: 20,
-        gap: 3,
+        gap: 8,
         '& .hover-visible': {
           opacity: 0,
           transition: 'opacity .25s',
@@ -63,14 +62,17 @@ export function DashboardHeader({ dashboard }: DashboardHeaderProps) {
     >
       <View
         style={{
-          fontSize: 25,
-          fontWeight: 500,
+          fontSize: 13,
+          fontWeight: 600,
+          color: theme.pageTextSubdued,
+          textTransform: 'uppercase',
+          letterSpacing: 0,
           flexGrow: 0,
           flexShrink: 0,
           flexBasis: 'auto',
         }}
       >
-        <Trans>Reports</Trans>:
+        <Trans>Reports</Trans>
       </View>
       {editingName ? (
         <InitialFocus>
@@ -80,8 +82,8 @@ export function DashboardHeader({ dashboard }: DashboardHeaderProps) {
             onUpdate={handleSaveName}
             onEscape={() => setEditingName(false)}
             style={{
-              fontSize: 25,
-              fontWeight: 500,
+              fontSize: 24,
+              fontWeight: 650,
               marginTop: -3,
               marginBottom: -4,
               paddingTop: 2,
@@ -93,8 +95,8 @@ export function DashboardHeader({ dashboard }: DashboardHeaderProps) {
         <>
           <View
             style={{
-              fontSize: 25,
-              fontWeight: 500,
+              fontSize: 24,
+              fontWeight: 650,
               marginRight: 5,
               flexGrow: 0,
               flexShrink: 1,

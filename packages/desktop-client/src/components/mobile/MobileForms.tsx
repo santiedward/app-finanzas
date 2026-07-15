@@ -42,8 +42,10 @@ export function FieldLabel({ title, flush, style }: FieldLabelProps) {
 const valueStyle = {
   borderWidth: 1,
   borderColor: theme.formInputBorder,
-  marginLeft: 8,
-  marginRight: 8,
+  borderRadius: 14,
+  boxShadow: '0 8px 20px rgba(0, 0, 0, 0.08)',
+  marginLeft: 10,
+  marginRight: 10,
   height: styles.mobileMinHeight,
 };
 
@@ -65,6 +67,7 @@ const iconFieldWrapperClassName = css({
   gap: 8,
   '&:focus-within': {
     borderColor: theme.formInputBorderSelected,
+    boxShadow: `0 0 0 3px color-mix(in srgb, ${theme.formInputBorderSelected} 18%, transparent), 0 12px 24px rgba(0, 0, 0, 0.12)`,
   },
 });
 
@@ -97,9 +100,9 @@ export function InputField({
       <View
         className={iconFieldWrapperClassName}
         nativeStyle={{
-          backgroundColor: disabled
-            ? theme.formInputTextReadOnlySelection
-            : theme.tableBackground,
+            backgroundColor: disabled
+              ? theme.formInputTextReadOnlySelection
+              : theme.cardBackground,
         }}
       >
         {iconStart && <View style={iconStyle}>{iconStart}</View>}
@@ -150,7 +153,9 @@ export function InputField({
         color: disabled ? theme.tableTextInactive : theme.tableText,
         backgroundColor: disabled
           ? theme.formInputTextReadOnlySelection
-          : theme.tableBackground,
+          : theme.cardBackground,
+        transition:
+          'border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease',
       }}
       {...props}
     />
@@ -173,15 +178,20 @@ const defaultTapFieldClassName = () =>
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: theme.tableBackground,
+    backgroundImage: `linear-gradient(135deg, color-mix(in srgb, ${theme.tableBackground} 92%, ${theme.mobileNavItemSelected}), ${theme.tableBackground})`,
+    transition:
+      'border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease',
     '&[data-disabled]': {
       backgroundColor: theme.formInputTextReadOnlySelection,
     },
     '&[data-pressed]': {
-      opacity: 0.5,
+      opacity: 0.82,
+      transform: 'translateY(1px)',
       boxShadow: 'none',
     },
     '&[data-hovered]': {
-      boxShadow: 'none',
+      borderColor: theme.formInputBorderSelected,
+      boxShadow: `0 0 0 3px color-mix(in srgb, ${theme.formInputBorderSelected} 14%, transparent), 0 12px 24px rgba(0, 0, 0, 0.12)`,
     },
   });
 

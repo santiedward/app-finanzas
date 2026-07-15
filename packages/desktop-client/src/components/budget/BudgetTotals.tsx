@@ -66,11 +66,14 @@ export const BudgetTotals = memo(function BudgetTotals({
         backgroundColor: theme.budgetCurrentMonth, //use budget colors, not generic table colors
         flexDirection: 'row',
         flexShrink: 0,
-        boxShadow: styles.cardShadow,
+        marginTop: 10,
         marginLeft: 5,
         marginRight: 5 + getScrollbarWidth(),
-        borderRadius: '4px 4px 0 0',
+        borderRadius: '8px 8px 0 0',
+        border: `1px solid ${theme.cardBorder}`,
         borderBottom: '1px solid ' + theme.tableBorder,
+        boxShadow:
+          '0 1px 2px rgba(16, 20, 32, 0.08), 0 10px 24px rgba(16, 20, 32, 0.12)',
         '& .hover-visible': {
           opacity: 0,
           transition: 'opacity .25s',

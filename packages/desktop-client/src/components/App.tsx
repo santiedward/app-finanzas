@@ -54,18 +54,18 @@ function AppInner() {
   const userData = useSelector(state => state.user.data);
 
   useEffect(() => {
-    setI18NextLanguage(null);
+    setI18NextLanguage('es');
   }, []);
 
   useEffect(() => {
     const maybeUpdate = async <T,>(cb?: () => T): Promise<T | void> => {
-      if (global.Actual.isUpdateReadyForDownload()) {
+      if (globalThis.Actual?.isUpdateReadyForDownload() === true) {
         dispatch(
           setAppState({
             loadingText: t('Downloading and applying update...'),
           }),
         );
-        await global.Actual.applyAppUpdate();
+        await globalThis.Actual.applyAppUpdate();
       }
       return cb?.();
     };

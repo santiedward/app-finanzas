@@ -425,12 +425,12 @@ export function ExpenseCategoryListItem({
       <View
         style={{
           height: ROW_HEIGHT,
-          borderColor: theme.tableBorder,
+          borderColor: `color-mix(in srgb, ${theme.tableBorder} 45%, transparent)`,
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          paddingLeft: 5,
-          paddingRight: 5,
+          paddingLeft: 12,
+          paddingRight: 8,
           borderBottomWidth: 1,
           opacity: isHidden ? 0.5 : undefined,
           backgroundColor: monthUtils.isCurrentMonth(month)
