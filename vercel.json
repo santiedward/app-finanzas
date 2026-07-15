@@ -1,0 +1,24 @@
+{
+    "headers": [
+          {
+                  "source": "/(.*)",
+                  "headers": [
+                            { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
+                            { "key": "Cross-Origin-Embedder-Policy", "value": "require-corp" },
+                            { "key": "Content-Security-Policy", "value": "default-src 'self' blob:; img-src 'self' blob: data:; script-src 'self' 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src http: https:;" }
+                  ]
+          },
+          {
+                  "source": "/kcab/(.*)",
+                  "headers": [
+                            { "key": "Content-Security-Policy", "value": "default-src 'self' blob:; img-src 'self' blob: data:; script-src 'self' 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src http: https:;" }
+                  ]
+          },
+          {
+                  "source": "/(.*).wasm",
+                  "headers": [
+                            { "key": "Content-Type", "value": "application/wasm" }
+                  ]
+          }
+    ]
+}
