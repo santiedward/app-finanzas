@@ -12,11 +12,10 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Button } from '@actual-app/components/button';
 import { Card } from '@actual-app/components/card';
 import { AnimatedLoading } from '@actual-app/components/icons/AnimatedLoading';
-import { SvgLogo } from '@actual-app/components/icons/logo';
 import {
   SvgArrowThinLeft,
   SvgArrowThinRight,
-  SvgCheveronRight,
+  SvgDotsHorizontalTriple,
 } from '@actual-app/components/icons/v1';
 import {
   SvgArrowButtonDown1,
@@ -575,15 +574,10 @@ export function BudgetPage() {
               onPress={onOpenBudgetPageMenu}
               aria-label={t('Budget page menu')}
             >
-              <SvgLogo
+              <SvgDotsHorizontalTriple
                 style={{ color: theme.mobileHeaderText }}
-                width="20"
-                height="20"
-              />
-              <SvgCheveronRight
-                style={{ flexShrink: 0, color: theme.mobileHeaderTextSubdued }}
-                width="14"
-                height="14"
+                width="18"
+                height="18"
               />
             </Button>
           }

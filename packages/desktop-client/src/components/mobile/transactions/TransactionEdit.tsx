@@ -18,7 +18,6 @@ import {
   SvgCalendar,
   SvgCheveronDown,
   SvgLocation,
-  SvgPiggyBank,
   SvgTag,
   SvgTrash,
   SvgUser,
@@ -73,6 +72,7 @@ import {
 } from 'date-fns';
 
 import { MobileBackButton } from '#components/mobile/MobileBackButton';
+import { MobileUsageGuide } from '#components/mobile/MobileUsageGuide';
 import {
   FieldLabel,
   InputField,
@@ -327,13 +327,7 @@ function Footer({
           isDisabled={!!editingField}
           onPress={() => onEditField(transaction.id, 'account')}
         >
-          <SvgPiggyBank width={17} height={17} />
-          <Text
-            style={{
-              ...styles.text,
-              marginLeft: 6,
-            }}
-          >
+          <Text style={styles.text}>
             <Trans>Select account</Trans>
           </Text>
         </Button>
@@ -1131,6 +1125,16 @@ const TransactionEditInner = memo<TransactionEditInnerProps>(
         }
         padding={0}
       >
+        {isAdding && (
+          <MobileUsageGuide
+            title={t('How to add a transaction')}
+            items={[
+              t('Enter the amount first, use the minus button for expenses.'),
+              t('Pick who you paid and which category it belongs to.'),
+              t('Choose the account this transaction affects, then save.'),
+            ]}
+          />
+        )}
         <View
           data-testid="transaction-form"
           style={{ flexShrink: 0, marginTop: 20, marginBottom: 20 }}
